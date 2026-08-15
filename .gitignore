@@ -9,6 +9,10 @@ target/
 .settings/
 .classpath
 .project
+bin/
+
+# Downloaded Initializr zips
+*.zip
 
 # OS
 .DS_Store
