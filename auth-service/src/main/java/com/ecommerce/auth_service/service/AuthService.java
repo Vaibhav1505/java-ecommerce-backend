@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import com.ecommerce.auth_service.dto.AuthResponse;
 import com.ecommerce.auth_service.dto.LoginRequest;
 import com.ecommerce.auth_service.dto.RegisterRequest;
+import com.ecommerce.auth_service.dto.UserResponse;
 import com.ecommerce.auth_service.entity.User;
 import com.ecommerce.auth_service.repository.UserRepository;
 
@@ -18,17 +19,18 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    public User register(RegisterRequest request) {
+    public UserResponse register(RegisterRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new IllegalIdentifierException(("Email already exist"));
+            throw new IllegalArgumentException(("Email already exist"));
         }
 
         User user = new User();
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(User.Role.CUSTOMER);
+        User saved= userRepository.save(user);
 
-        return userRepository.save(user);
+        return new UserResponse(saved.getId(), saved.getEmail(), saved.getRole().name());
     }
 
     public AuthResponse login(LoginRequest request) {

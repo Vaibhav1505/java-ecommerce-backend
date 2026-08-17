@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ecommerce.auth_service.dto.AuthResponse;
 import com.ecommerce.auth_service.dto.LoginRequest;
 import com.ecommerce.auth_service.dto.RegisterRequest;
+import com.ecommerce.auth_service.dto.UserResponse;
 import com.ecommerce.auth_service.entity.User;
 import com.ecommerce.auth_service.service.AuthService;
 
@@ -24,7 +25,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@Valid @RequestBody RegisterRequest request){
+    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request){
         return ResponseEntity.ok(authService.register(request));
     }
 
