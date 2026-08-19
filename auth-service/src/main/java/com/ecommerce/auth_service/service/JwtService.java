@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.Claims;
 
 @Service
 public class JwtService {
@@ -30,5 +31,30 @@ public class JwtService {
 
         return Jwts.builder().subject(email).claim("role", role).issuedAt(now).expiration(expiry).signWith(getKey())
                 .compact();
+    }
+
+    public String extractEmail(String token) {
+        return extractClaims(token).getSubject();
+    }
+
+    public String extractRole(String token){
+        return extractClaims(token).get("role",String.class);
+    }
+
+    public boolean isValidToken(String token) {
+        try {
+            return extractClaims(token).getExpiration().after(new Date());
+        } catch (Exception e) {
+            // TODO: handle exception
+            return false;
+        }
+    }
+
+    private Claims extractClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(getKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }

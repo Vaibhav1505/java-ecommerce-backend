@@ -15,6 +15,9 @@ import com.ecommerce.auth_service.service.AuthService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -33,5 +36,11 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request){
         return ResponseEntity.ok(authService.login(request));
     }
+
+    @GetMapping("/admin/test")
+    public ResponseEntity<String> adminOnly() {
+        return ResponseEntity.ok("Hello Admin");
+    }
+    
     
 }
