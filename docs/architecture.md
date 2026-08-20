@@ -62,3 +62,17 @@ Infra (Postgres now; Kafka and Redis in later phases) runs via Docker Compose so
 to be installed natively and reinstalled between machines. Application services run locally
 against JDK 17 during active development for a fast feedback loop; they get Dockerized
 separately starting in Phase 4 for AWS deployment.
+
+
+## 6. Gateway JWT Validation: Pass-through, not Gateway-level
+
+The Gateway does not validate JWTs itself — it routes requests through unchanged, and each
+downstream service (starting with Auth Service) validates the token and enforces role-based
+access control independently, via its own JwtAuthFilter + SecurityConfig.
+
+**Why:** the Gateway runs on Spring's reactive stack (WebFlux) while every business service runs
+on the servlet stack (Spring MVC) — a servlet Filter like JwtAuthFilter doesn't run on WebFlux,
+so Gateway-level validation would need a separate implementation (a GlobalFilter) duplicating the
+same logic in a different form. Validating per-service also means no service implicitly trusts
+"this request came through the Gateway" — each one independently verifies the token, which is a
+more defensible security posture than a single trusted choke point.

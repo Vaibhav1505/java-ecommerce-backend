@@ -18,6 +18,43 @@ services:
       retries: 5
       start_period: 30s
 
+  eureka-server:
+    build: ./eureka-server
+    container_name: eureka-server
+    ports:
+      - '8761:8761'
+    restart: unless-stopped
+
+  config-server:
+    build: ./config-server
+    container_name: config-server
+    ports:
+      - '8888:8888'
+    depends_on:
+      - eureka-server
+    restart: unless-stopped
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - '8080:8080'
+    depends_on:
+      - eureka-server
+    restart: unless-stopped
+
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports:
+      - '8081:8081'
+    depends_on:
+      postgres: 
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    restart: unless-stopped
+
 networks:
   default:
     name: ecommerce-net
