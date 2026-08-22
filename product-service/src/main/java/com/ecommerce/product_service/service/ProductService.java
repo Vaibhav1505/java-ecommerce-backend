@@ -7,6 +7,9 @@ import com.ecommerce.product_service.entity.Product;
 import com.ecommerce.product_service.repository.CategoryRepository;
 import com.ecommerce.product_service.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -71,5 +74,9 @@ public class ProductService {
                 product.getDescription(),
                 product.getPrice(),
                 product.getCategory().getName());
+    }
+
+    public Page<ProductResponse> search(String name,Long categoryId,Pageable pageable){
+        return productRepository.search(name, categoryId, pageable).map(this::toResponse);
     }
 }
