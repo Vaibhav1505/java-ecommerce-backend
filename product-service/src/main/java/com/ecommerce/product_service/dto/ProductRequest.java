@@ -18,7 +18,6 @@ public class ProductRequest {
     @NotNull
     private BigDecimal price;
 
-    //This is for checking token
 
     @NotNull
     private Long categoryId;
