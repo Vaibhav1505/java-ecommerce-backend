@@ -18,6 +18,8 @@ public class ProductRequest {
     @NotNull
     private BigDecimal price;
 
+    //checking code confirm 
+
 
     @NotNull
     private Long categoryId;
